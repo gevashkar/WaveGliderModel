@@ -1,0 +1,75 @@
+function param = get_model_param
+%% Setting generic model parameter which can be accessed elsewhere
+syms xf yf zf phif thetaf psif phit thetat psig thetag phig
+    
+%% waveglider properties
+
+    %float parameters
+    param.M_float = 120;                % Mass of floater
+    param.l_float = 3.05;               % Length of float
+    param.w_float = 0.81;               % Width of float
+    param.h_float = 0.23;               % Height of float
+    param.A_float = param.l_float*param.w_float;    % Water plane area
+    param.Jy_float = param.M_float*(param.h_float^2+param.l_float^2)/12; % J about y-axis
+    
+    %glider parameters
+    param.M_glider = 20;
+    param.l_glider = 2.13;              %length of glider
+    param.w_glider = 1.42;              %width of glider
+    param.h_glider = 0.21;              %height of glider
+    param.A_glider = param.l_glider*param.w_glider; %water plane area
+    param.V_glider = param.l_glider*param.w_glider*param.h_glider*0.002; 
+                                        %displaced volume; note volume is multiplied by percentage 
+                                            %of expected displaced volume since the glider since not a solid
+    param.Jy_glider = param.M_glider*(param.h_glider^2+param.l_glider^2)/12; % J about y-axis
+    
+    %tether parameters
+    param.ftx_tether = 0;               %float to top tether in x-dir
+    param.ftz_tether = 0;
+    param.gtx_tether = 0;               %glider to bottom tether in x-dir
+    param.gtz_tether = 0;
+    param.M_tether = 10;
+    param.l_tether = 4;                  %length of tether
+    param.r_tether = 0.005;              %radius of tether
+    param.A_tether = pi*param.r_tether^2;    %water plane area
+    param.V_tether = param.l_tether*param.A_tether;    %volume of tether
+    param.Jy_tether = param.M_tether*param.r_tether^2/4 + param.M_tether*param.l_tether^2/3;
+                                        % J about y-axis: J = mr^2/4 + ml^2/3
+                                        
+    %aerofoil parameters
+    param.gax_aero = [0.75;0.45;0.15;-0.15;-0.45;-0.75];              % Glider to aerofoil in x-dir 
+    param.gaz_aero = 0;
+    param.M_aero = 3;
+    param.l_aero = 0.2;
+    param.w_aero = 1.42;
+    param.t_aero = 0.01;
+    param.V_aero = param.l_aero*param.w_aero*param.t_aero;
+    param.Jy_aero = param.M_aero*(param.l_aero^2 + param.t_aero^2 + (param.l_aero/2)^2);
+                                        % J about y-axis: J = m(l^2 + t^2)
+                                        % + m*r^2
+
+%% Set parameters
+
+param.g    = 9.81;
+
+    %2D 6DOF D-H reference frames
+param.A2D = [0,0,zf,pi/2;
+             0,pi/2,xf,pi/2;
+             0,pi/2,0,pi/2+thetaf;
+             0,0,0,-pi/2-thetaf+thetat;
+             4,0,0,pi/2-thetat+thetag;
+             0,0,0,-pi/2-thetag+thetaa];
+
+    %3D 11DOF D-H reference frames
+param.A3D = [0,-pi/2,yf,-pi/2;
+             0,-pi/2,xf,-pi/2;
+             0,-pi/2,zf,-pi/2;
+             0,0,0,phif;
+             0,-pi/2,0,-pi/2+thetaf;
+             0,-pi/2,0,psif
+             0,pi/2,0,-thetaf+thetat
+             param.l_tether,-pi/2,0,psig
+             0,pi/2,0,-thetat+pi/2+thetag
+             0,pi/2,0,phig;
+             0,-pi/2,0,-thetag+thetaa];
+end

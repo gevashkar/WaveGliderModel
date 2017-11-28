@@ -1,0 +1,20 @@
+function [Q] = getGenForce(F,q,dq,offset,state)
+
+narginchk(2,3);
+if nargin == 2
+    state = 0;
+end
+
+p = get_model_param;
+ax az bx bz cx cz 
+
+switch state
+    case 0
+        Q = get_QGen0523(q,dq,F,offset);
+    case 1 % Force on floater
+        Q = get_QGen0523(q,dq,F,offset);
+        
+        
+
+
+end
